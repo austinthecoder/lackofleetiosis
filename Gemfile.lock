@@ -44,7 +44,6 @@ GEM
       tzinfo (~> 1.1)
     arel (9.0.0)
     builder (3.2.3)
-    byebug (11.0.1)
     concurrent-ruby (1.1.5)
     crass (1.0.4)
     erubi (1.8.0)
@@ -116,11 +115,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  byebug
   pg (>= 0.18, < 2.0)
   puma (~> 3.11)
   rails (~> 5.2.3)
-  tzinfo-data
 
 RUBY VERSION
    ruby 2.6.3p62
