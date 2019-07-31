@@ -1,5 +1,9 @@
 class ApplicationController < ActionController::API
+  def root
+    render json: {message: 'Hello, friends'}
+  end
+
   def not_found
-    render json: {message: 'Not found'}, status: 404
+    render json: {error: 'Not found'}, status: 404
   end
 end
