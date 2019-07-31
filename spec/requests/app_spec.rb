@@ -1,8 +1,7 @@
-RSpec.describe 'app', :type => :request do
+RSpec.describe 'app' do
   context 'root path' do
     it 'says hello' do
-      get '/'
-      data = JSON.parse(response.body)
+      data = get '/'
       expect(data['message']).to eq('Hello, friends')
     end
   end
@@ -18,13 +17,12 @@ RSpec.describe 'app', :type => :request do
       context "for #{method.upcase}s" do
         paths.each do |path|
           context "example: #{path}" do
-            before { public_send(method, '/path') }
+            before { @data = public_send(method, '/path') }
 
             it('status is 404') { expect(response.status).to eq(404) }
 
             it('has helpful message') do
-              data = JSON.parse(response.body)
-              expect(data['error']).to eq('Not found')
+              expect(@data['error']).to eq('Not found')
             end
           end
         end
