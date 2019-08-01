@@ -40,7 +40,7 @@ RSpec.configure do |config|
         year: 2012,
         trim: "EXT",
         color: "Red",
-        default_image_url_large: "https://example.com/22222222222222222.png",
+        default_image_url_large: "https://example.com/22.png",
       },
       {
         id: 33,
@@ -50,7 +50,7 @@ RSpec.configure do |config|
         year: 1992,
         trim: "GS",
         color: nil,
-        default_image_url_large: "https://example.com/33333333333333333.png",
+        default_image_url_large: "https://example.com/33.png",
       },
     ])
 
