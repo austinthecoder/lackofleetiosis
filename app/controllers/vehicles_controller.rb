@@ -13,33 +13,18 @@ class VehiclesController < ApplicationController
   end
 
   def index
-    data = Vehicle.all.map do |vehicle|
-      build_vehicle_resource(vehicle)
-    end
-    render json: data
+    result = $app.fetch_vehicles
+    render json: result.resources
   end
 
   def show
-    vehicle = Vehicle.find_by(id: params[:id])
-    if vehicle
-      render json: build_vehicle_resource(vehicle)
-    else
+    result = $app.fetch_vehicle(id: params[:id])
+
+    case result.status
+    when :ok
+      render json: result.resource
+    when :not_found
       not_found
     end
-  end
-
-  private
-
-  def build_vehicle_resource(vehicle)
-    {
-      id: vehicle.id,
-      vin: vehicle.vin,
-      make: vehicle.make,
-      model: vehicle.model,
-      year: vehicle.year,
-      trim: vehicle.trim,
-      color: vehicle.color,
-      image_url: vehicle.image_url,
-    }
   end
 end

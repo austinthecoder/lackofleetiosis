@@ -44,4 +44,37 @@ class App
       Result.new(status: :unprocessable_entity, errors: vehicle.errors.values.flatten)
     end
   end
+
+  def fetch_vehicles
+    resources = Vehicle.all.map do |vehicle|
+      build_vehicle_resource(vehicle)
+    end
+
+    Result.new(status: :ok, resources: resources)
+  end
+
+  def fetch_vehicle(id:)
+    vehicle = Vehicle.find_by(id: id)
+
+    if vehicle
+      Result.new(status: :ok, resource: build_vehicle_resource(vehicle))
+    else
+      Result.new(status: :not_found)
+    end
+  end
+
+  private
+
+  def build_vehicle_resource(vehicle)
+    {
+      id: vehicle.id,
+      vin: vehicle.vin,
+      make: vehicle.make,
+      model: vehicle.model,
+      year: vehicle.year,
+      trim: vehicle.trim,
+      color: vehicle.color,
+      image_url: vehicle.image_url,
+    }
+  end
 end
