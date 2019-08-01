@@ -29,6 +29,18 @@ class Fleetio
     end
   end
 
+  def fetch_fuel_entries(vehicle_id:)
+    resp = api.get("https://secure.fleetio.com/api/v1/vehicles/#{vehicle_id}/fuel_entries")
+
+    if resp.code != 200
+      return Ivo.(status: :service_unavailable, errors: ['Service is unavailable at the moment.'])
+    end
+
+    fuel_entries = JSON.parse(resp.body.to_s, symbolize_names: true)
+
+    Ivo.(status: :ok, fuel_entries: fuel_entries)
+  end
+
   private
 
   attr_reader :api

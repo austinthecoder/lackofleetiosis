@@ -1,6 +1,15 @@
 class Vehicle < ApplicationRecord
   validates :vin, uniqueness: {scope: :vin}
 
+  def status
+    case status_id
+    when 1
+      :unprocessed
+    when 2
+      :processed
+    end
+  end
+
   def as_json(*)
     {
       id: id,
@@ -11,6 +20,9 @@ class Vehicle < ApplicationRecord
       trim: trim,
       color: color,
       image_url: image_url,
+      status: status,
+      total_gallons: total_gallons,
+      total_miles: total_miles,
     }
   end
 end

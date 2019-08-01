@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_01_022001) do
+ActiveRecord::Schema.define(version: 2019_08_01_200443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,10 @@ ActiveRecord::Schema.define(version: 2019_08_01_022001) do
     t.string "trim"
     t.string "color"
     t.text "image_url"
+    t.integer "status_id", default: 1
+    t.integer "fleetio_vehicle_id"
+    t.decimal "total_gallons"
+    t.decimal "total_miles"
     t.index ["vin"], name: "index_vehicles_on_vin", unique: true
   end
 

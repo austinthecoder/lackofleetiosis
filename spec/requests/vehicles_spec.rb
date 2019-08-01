@@ -1,34 +1,57 @@
 RSpec.describe 'vehicles' do
+  include ActiveJob::TestHelper
+
   before do
-    @url = 'https://secure.fleetio.com/api/v1/vehicles'
-
-    @headers = {
-      'Authorization' => 'Token FLEETIO_API_KEY',
-      'Account-Token' => 'FLEETIO_ACCOUNT_TOKEN',
-    }
-
-    data = [
+    stub_fleetio_vehicles_request(data: [
       {
+        id: 22,
         vin: "22222222222222222",
         make: "Ford",
         model: "F150 Regular Cab",
         year: 2012,
         trim: "EXT",
         color: "Red",
-        default_image_url_large: "https://example.com/22222222222222222.png"
+        default_image_url_large: "https://example.com/22222222222222222.png",
       },
       {
+        id: 33,
         vin: "33333333333333333",
         make: "Acura",
         model: "Vigor",
         year: 1992,
         trim: "GS",
         color: nil,
-        default_image_url_large: "https://example.com/33333333333333333.png"
-      }
-    ]
+        default_image_url_large: "https://example.com/33333333333333333.png",
+      },
+    ])
 
-    stub_request(:get, @url).with(headers: @headers).to_return(status: 200, body: data.to_json)
+    stub_fleetio_vehicle_fuel_entries_request(
+      vehicle_id: 22,
+      data: [
+        {
+          us_gallons: '10.3',
+          usage_in_mi: '200.7',
+        },
+        {
+          us_gallons: '20.2',
+          usage_in_mi: '380.1',
+        },
+      ],
+    )
+
+    stub_fleetio_vehicle_fuel_entries_request(
+      vehicle_id: 33,
+      data: [
+        {
+          us_gallons: '15.9',
+          usage_in_mi: '270.1',
+        },
+        {
+          us_gallons: '1.0',
+          usage_in_mi: nil,
+        },
+      ],
+    )
   end
 
   describe 'creating' do
@@ -73,7 +96,7 @@ RSpec.describe 'vehicles' do
 
     context 'when the Fleetio API service fails' do
       before do
-        stub_request(:get, @url).with(headers: @headers).to_return(status: 503)
+        stub_fleetio_vehicles_request(status: 503)
         @data = post '/vehicles', params: {vin: '22222222222222222'}
       end
 
@@ -130,8 +153,24 @@ RSpec.describe 'vehicles' do
           year: 2012,
           trim: "EXT",
           color: "Red",
-          image_url: "https://example.com/22222222222222222.png"
+          image_url: "https://example.com/22222222222222222.png",
+          status: 'unprocessed',
+          total_gallons: nil,
+          total_miles: nil,
         )
+      end
+
+      context "after being processed" do
+        it 'set various attributes' do
+          perform_enqueued_jobs do
+            @id = post('/vehicles', params: {vin: '33333333333333333'})[:id]
+          end
+
+          vehicle = get "/vehicles/#{@id}"
+          expect(vehicle[:status]).to eq('processed')
+          expect(vehicle[:total_gallons]).to eq('16.9')
+          expect(vehicle[:total_miles]).to eq('270.1')
+        end
       end
     end
   end
@@ -165,6 +204,9 @@ RSpec.describe 'vehicles' do
         trim: "GS",
         color: nil,
         image_url: "https://example.com/33333333333333333.png",
+        status: 'unprocessed',
+        total_gallons: nil,
+        total_miles: nil,
       )
     end
   end

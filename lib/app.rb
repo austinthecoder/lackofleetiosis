@@ -20,6 +20,7 @@ class App
     when :ok
       vehicle = Vehicle.new(
         vin: vin,
+        fleetio_vehicle_id: result.vehicle[:id],
         make: result.vehicle[:make],
         model: result.vehicle[:model],
         year: result.vehicle[:year],
@@ -29,6 +30,8 @@ class App
       )
 
       if vehicle.save
+        VehicleProcessorJob.perform_later(vehicle.id)
+
         Ivo.(status: :created, id: vehicle.id)
       else
         Ivo.(status: :unprocessable_entity, errors: vehicle.errors.values.flatten)
@@ -52,6 +55,17 @@ class App
     else
       Ivo.(status: :not_found)
     end
+  end
+
+  def process_vehicle(id:)
+    vehicle = fetch_vehicle(id: id).vehicle
+
+    result = fleetio.fetch_fuel_entries(vehicle_id: vehicle.fleetio_vehicle_id)
+
+    total_gallons = result.fuel_entries.sum { |fe| fe[:us_gallons].to_d }
+    total_miles = result.fuel_entries.sum { |fe| fe[:usage_in_mi].to_d }
+
+    Vehicle.where(id: id).update_all(status_id: 2, total_gallons: total_gallons, total_miles: total_miles)
   end
 
   private
