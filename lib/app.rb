@@ -1,15 +1,10 @@
 class App
   def self.start
-    fleetio_api = HTTP.headers(
-      'Authorization' => "Token #{ENV['FLEETIO_API_KEY']}",
-      'Account-Token' => ENV['FLEETIO_ACCOUNT_TOKEN'],
-    )
-
-    new(fleetio_api: fleetio_api)
+    new(fleetio: Fleetio.start)
   end
 
-  def initialize(fleetio_api:)
-    @fleetio_api = fleetio_api
+  def initialize(fleetio:)
+    @fleetio = fleetio
   end
 
   def add_vehicle(vin:)
@@ -19,33 +14,29 @@ class App
       return Ivo.(status: :unprocessable_entity, errors: ['VIN is required.'])
     end
 
-    resp = fleetio_api.get('https://secure.fleetio.com/api/v1/vehicles')
+    result = fleetio.fetch_vehicle(vin: vin)
 
-    if resp.code != 200
-      return Ivo.(status: :service_unavailable, errors: ['Service is unavailable at the moment.'])
-    end
+    case result.status
+    when :ok
+      vehicle = Vehicle.new(
+        vin: vin,
+        make: result.vehicle[:make],
+        model: result.vehicle[:model],
+        year: result.vehicle[:year],
+        trim: result.vehicle[:trim],
+        color: result.vehicle[:color],
+        image_url: result.vehicle[:default_image_url_large],
+      )
 
-    fleetio_vehicles = JSON.parse(resp.body.to_s, symbolize_names: true)
-    fleetio_vehicle = fleetio_vehicles.find { |v| v[:vin] == vin }
-
-    unless fleetio_vehicle
-      return Ivo.(status: :unprocessable_entity, errors: ['Unable to identify a vehicle.'])
-    end
-
-    vehicle = Vehicle.new(
-      vin: vin,
-      make: fleetio_vehicle[:make],
-      model: fleetio_vehicle[:model],
-      year: fleetio_vehicle[:year],
-      trim: fleetio_vehicle[:trim],
-      color: fleetio_vehicle[:color],
-      image_url: fleetio_vehicle[:default_image_url_large],
-    )
-
-    if vehicle.save
-      Ivo.(status: :created, id: vehicle.id)
+      if vehicle.save
+        Ivo.(status: :created, id: vehicle.id)
+      else
+        Ivo.(status: :unprocessable_entity, errors: vehicle.errors.values.flatten)
+      end
+    when :not_found
+      Ivo.(status: :unprocessable_entity, errors: ['Unable to identify a vehicle.'])
     else
-      Ivo.(status: :unprocessable_entity, errors: vehicle.errors.values.flatten)
+      Ivo.(status: :service_unavailable, errors: ['Service is unavailable at the moment.'])
     end
   end
 
@@ -65,5 +56,5 @@ class App
 
   private
 
-  attr_reader :fleetio_api
+  attr_reader :fleetio
 end
