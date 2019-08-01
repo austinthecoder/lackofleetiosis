@@ -39,16 +39,7 @@ class VehiclesController < ApplicationController
 
   def index
     data = Vehicle.all.map do |vehicle|
-      {
-        id: vehicle.id,
-        vin: vehicle.vin,
-        make: vehicle.make,
-        model: vehicle.model,
-        year: vehicle.year,
-        trim: vehicle.trim,
-        color: vehicle.color,
-        image_url: vehicle.image_url,
-      }
+      build_vehicle_resource(vehicle)
     end
     render json: data
   end
@@ -56,18 +47,24 @@ class VehiclesController < ApplicationController
   def show
     vehicle = Vehicle.find_by(id: params[:id])
     if vehicle
-      render json: {
-        id: vehicle.id,
-        vin: vehicle.vin,
-        make: vehicle.make,
-        model: vehicle.model,
-        year: vehicle.year,
-        trim: vehicle.trim,
-        color: vehicle.color,
-        image_url: vehicle.image_url,
-      }
+      render json: build_vehicle_resource(vehicle)
     else
       not_found
     end
+  end
+
+  private
+
+  def build_vehicle_resource(vehicle)
+    {
+      id: vehicle.id,
+      vin: vehicle.vin,
+      make: vehicle.make,
+      model: vehicle.model,
+      year: vehicle.year,
+      trim: vehicle.trim,
+      color: vehicle.color,
+      image_url: vehicle.image_url,
+    }
   end
 end
