@@ -14,7 +14,7 @@ class VehiclesController < ApplicationController
 
   def index
     result = $app.fetch_vehicles
-    render json: result.resources
+    render json: result.vehicles
   end
 
   def show
@@ -22,7 +22,7 @@ class VehiclesController < ApplicationController
 
     case result.status
     when :ok
-      render json: result.resource
+      render json: result.vehicle
     when :not_found
       not_found
     end

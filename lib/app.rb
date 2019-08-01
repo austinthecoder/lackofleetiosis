@@ -46,18 +46,18 @@ class App
   end
 
   def fetch_vehicles
-    resources = Vehicle.all.map do |vehicle|
+    vehicles = Vehicle.all.map do |vehicle|
       build_vehicle_resource(vehicle)
     end
 
-    Ivo.(status: :ok, resources: resources)
+    Ivo.(status: :ok, vehicles: vehicles)
   end
 
   def fetch_vehicle(id:)
     vehicle = Vehicle.find_by(id: id)
 
     if vehicle
-      Ivo.(status: :ok, resource: build_vehicle_resource(vehicle))
+      Ivo.(status: :ok, vehicle: build_vehicle_resource(vehicle))
     else
       Ivo.(status: :not_found)
     end
