@@ -1,3 +1,9 @@
+ENV['ZENV'] = 'test'
+ENV['FLEETIO_API_KEY'] = 'FLEETIO_API_KEY'
+ENV['FLEETIO_ACCOUNT_TOKEN'] = 'FLEETIO_ACCOUNT_TOKEN'
+
+require 'zenv'
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
