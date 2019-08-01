@@ -44,21 +44,15 @@ class App
   end
 
   def fetch_vehicles
-    Ivo.(status: :ok, vehicles: Vehicle.all)
+    Vehicle.all
   end
 
   def fetch_vehicle(id:)
-    vehicle = Vehicle.find_by(id: id)
-
-    if vehicle
-      Ivo.(status: :ok, vehicle: vehicle)
-    else
-      Ivo.(status: :not_found)
-    end
+    Vehicle.find_by(id: id)
   end
 
   def process_vehicle(id:)
-    vehicle = fetch_vehicle(id: id).vehicle
+    vehicle = fetch_vehicle(id: id)
 
     result = fleetio.fetch_fuel_entries(vehicle_id: vehicle.fleetio_vehicle_id)
 

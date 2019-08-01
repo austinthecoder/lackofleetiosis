@@ -13,17 +13,15 @@ class VehiclesController < ApplicationController
   end
 
   def index
-    result = $app.fetch_vehicles
-    render json: result.vehicles
+    render json: $app.fetch_vehicles
   end
 
   def show
-    result = $app.fetch_vehicle(id: params[:id])
+    vehicle = $app.fetch_vehicle(id: params[:id])
 
-    case result.status
-    when :ok
-      render json: result.vehicle
-    when :not_found
+    if vehicle
+      render json: vehicle
+    else
       not_found
     end
   end

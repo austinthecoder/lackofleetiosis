@@ -18,18 +18,16 @@ class Cli < Thor
 
   desc 'fetch_vehicles', 'Fetch all vehicles'
   def fetch_vehicles
-    result = $app.fetch_vehicles
-    puts JSON.pretty_generate(result.vehicles.as_json)
+    puts JSON.pretty_generate($app.fetch_vehicles.as_json)
   end
 
   desc 'fetch_vehicle ID', 'Fetch a vehicle by ID'
   def fetch_vehicle(id)
-    result = $app.fetch_vehicle(id: id)
+    vehicle = $app.fetch_vehicle(id: id)
 
-    case result.status
-    when :ok
-      puts JSON.pretty_generate(result.vehicle.as_json)
-    when :not_found
+    if vehicle
+      puts JSON.pretty_generate(vehicle.as_json)
+    else
       puts "Vehicle not found"
     end
   end
