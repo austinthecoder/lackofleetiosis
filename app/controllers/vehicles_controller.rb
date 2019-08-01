@@ -7,21 +7,21 @@ class VehiclesController < ApplicationController
 
     resp = fleetio_api.get('https://secure.fleetio.com/api/v1/vehicles')
 
-    vin = params['vin'].to_s.strip
+    vin = params[:vin].to_s.strip
 
     if resp.code == 200
-      fleetio_vehicles = JSON.parse(resp.body.to_s)
-      fleetio_vehicle = fleetio_vehicles.find { |v| v['vin'] == vin }
+      fleetio_vehicles = JSON.parse(resp.body.to_s, symbolize_names: true)
+      fleetio_vehicle = fleetio_vehicles.find { |v| v[:vin] == vin }
 
       if fleetio_vehicle
         vehicle = Vehicle.new(
           vin: vin,
-          make: fleetio_vehicle['make'],
-          model: fleetio_vehicle['model'],
-          year: fleetio_vehicle['year'],
-          trim: fleetio_vehicle['trim'],
-          color: fleetio_vehicle['color'],
-          image_url: fleetio_vehicle['default_image_url_large'],
+          make: fleetio_vehicle[:make],
+          model: fleetio_vehicle[:model],
+          year: fleetio_vehicle[:year],
+          trim: fleetio_vehicle[:trim],
+          color: fleetio_vehicle[:color],
+          image_url: fleetio_vehicle[:default_image_url_large],
         )
 
         if vehicle.save

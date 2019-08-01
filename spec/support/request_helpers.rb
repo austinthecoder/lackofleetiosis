@@ -27,7 +27,7 @@ module RequestHelpers
     result = super(method, path, headers: headers, **args)
 
     if response.content_type =~ /application\/json/
-      JSON.parse(response.body)
+      JSON.parse(response.body, symbolize_names: true)
     else
       result
     end

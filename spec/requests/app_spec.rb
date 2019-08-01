@@ -2,7 +2,7 @@ RSpec.describe 'app' do
   context 'root path' do
     it 'says hello' do
       data = get '/'
-      expect(data['message']).to eq('Hello, friends')
+      expect(data[:message]).to eq('Hello, friends')
     end
   end
 
@@ -22,7 +22,7 @@ RSpec.describe 'app' do
             it('status is 404') { expect(response.status).to eq(404) }
 
             it('has helpful message') do
-              expect(@data['error']).to eq('Not found')
+              expect(@data[:error]).to eq('Not found')
             end
           end
         end
