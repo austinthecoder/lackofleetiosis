@@ -46,35 +46,16 @@ class App
   end
 
   def fetch_vehicles
-    vehicles = Vehicle.all.map do |vehicle|
-      build_vehicle_resource(vehicle)
-    end
-
-    Ivo.(status: :ok, vehicles: vehicles)
+    Ivo.(status: :ok, vehicles: Vehicle.all)
   end
 
   def fetch_vehicle(id:)
     vehicle = Vehicle.find_by(id: id)
 
     if vehicle
-      Ivo.(status: :ok, vehicle: build_vehicle_resource(vehicle))
+      Ivo.(status: :ok, vehicle: vehicle)
     else
       Ivo.(status: :not_found)
     end
-  end
-
-  private
-
-  def build_vehicle_resource(vehicle)
-    {
-      id: vehicle.id,
-      vin: vehicle.vin,
-      make: vehicle.make,
-      model: vehicle.model,
-      year: vehicle.year,
-      trim: vehicle.trim,
-      color: vehicle.color,
-      image_url: vehicle.image_url,
-    }
   end
 end
