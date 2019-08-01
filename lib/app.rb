@@ -1,6 +1,15 @@
 class App
   def self.start
-    new
+    fleetio_api = HTTP.headers(
+      'Authorization' => "Token #{ENV['FLEETIO_API_KEY']}",
+      'Account-Token' => ENV['FLEETIO_ACCOUNT_TOKEN'],
+    )
+
+    new(fleetio_api: fleetio_api)
+  end
+
+  def initialize(fleetio_api:)
+    @fleetio_api = fleetio_api
   end
 
   def add_vehicle(vin:)
@@ -9,11 +18,6 @@ class App
     if vin.blank?
       return Ivo.(status: :unprocessable_entity, errors: ['VIN is required.'])
     end
-
-    fleetio_api = HTTP.headers(
-      'Authorization' => "Token #{ENV['FLEETIO_API_KEY']}",
-      'Account-Token' => ENV['FLEETIO_ACCOUNT_TOKEN'],
-    )
 
     resp = fleetio_api.get('https://secure.fleetio.com/api/v1/vehicles')
 
@@ -58,4 +62,8 @@ class App
       Ivo.(status: :not_found)
     end
   end
+
+  private
+
+  attr_reader :fleetio_api
 end
