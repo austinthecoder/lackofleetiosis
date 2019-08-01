@@ -36,14 +36,25 @@ RSpec.describe 'vehicles – fetching' do
 
       context "after being processed" do
         it 'set various attributes' do
-          perform_enqueued_jobs do
-            @id = post('/vehicles', params: {vin: '33333333333333333'})[:id]
+          id = perform_enqueued_jobs do
+            post('/vehicles', params: {vin: '33333333333333333'})[:id]
           end
 
-          vehicle = get "/vehicles/#{@id}"
+          vehicle = get "/vehicles/#{id}"
           expect(vehicle[:status]).to eq('processed')
           expect(vehicle[:total_gallons]).to eq('16.9')
           expect(vehicle[:total_miles]).to eq('270.1')
+        end
+
+        it 'handles no fuel entries correctly' do
+          id = perform_enqueued_jobs do
+            post('/vehicles', params: {vin: '44444444444444444'})[:id]
+          end
+
+          vehicle = get "/vehicles/#{id}"
+          expect(vehicle[:status]).to eq('processed')
+          expect(vehicle[:total_gallons]).to eq('0.0')
+          expect(vehicle[:total_miles]).to eq('0.0')
         end
       end
     end

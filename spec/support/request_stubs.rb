@@ -52,6 +52,16 @@ RSpec.configure do |config|
         color: nil,
         default_image_url_large: "https://example.com/33.png",
       },
+      {
+        id: 44,
+        vin: "44444444444444444",
+        make: "Chevrolet",
+        model: "S10 Crew Cab",
+        year: 2003,
+        trim: nil,
+        color: 'Green',
+        default_image_url_large: "https://example.com/44.png",
+      },
     ])
 
     stub_fleetio_vehicle_fuel_entries_request(
@@ -80,6 +90,11 @@ RSpec.configure do |config|
           usage_in_mi: nil,
         },
       ],
+    )
+
+    stub_fleetio_vehicle_fuel_entries_request(
+      vehicle_id: 44,
+      data: [],
     )
   end
 end
