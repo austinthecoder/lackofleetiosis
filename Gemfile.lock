@@ -68,6 +68,7 @@ GEM
     http_parser.rb (0.6.0)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
+    ivo (0.4.0)
     loofah (2.2.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -160,6 +161,7 @@ PLATFORMS
 
 DEPENDENCIES
   http (~> 4.1)
+  ivo (~> 0.4)
   pg (>= 0.18, < 2.0)
   puma (~> 3.11)
   rails (~> 5.2.3)
