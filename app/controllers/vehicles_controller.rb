@@ -10,12 +10,17 @@ class VehiclesController < ApplicationController
     vin = params['vin'].to_s.strip
 
     if resp.code == 200
-      vehicles = JSON.parse(resp.body.to_s)
-      vehicle = vehicles.find { |v| v['vin'] == vin }
+      fleetio_vehicles = JSON.parse(resp.body.to_s)
+      fleetio_vehicle = fleetio_vehicles.find { |v| v['vin'] == vin }
 
-      if vehicle
-        id = Vehicle.create!(vin: vin).id
-        render json: {id: id}, status: 201
+      if fleetio_vehicle
+        vehicle = Vehicle.new(vin: vin)
+
+        if vehicle.save
+          render json: {id: vehicle.id}, status: 201
+        else
+          head 422
+        end
       else
         head 422
       end

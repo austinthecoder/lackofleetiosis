@@ -39,18 +39,27 @@ RSpec.describe 'vehicles' do
       end
     end
 
-    context 'when a Fleetio vehicle exists for the VIN' do
-      before { @data = post '/vehicles', params: {vin: '22222222222222222'} }
-
+    context 'when a vehicle was already created with the same VIN' do
       it 'status is 422' do
-        expect(response.status).to eq(201)
+        2.times { post '/vehicles', params: {vin: '22222222222222222'} }
+        expect(response.status).to eq(422)
+      end
+    end
 
-        post '/vehicles', params: {vin: ' 22222222222222222 '} # ignore extra spaces
+    context 'when a Fleetio vehicle exists for the VIN' do
+      it 'status is 201' do
+        post '/vehicles', params: {vin: '22222222222222222'}
         expect(response.status).to eq(201)
       end
 
       it 'identifier is returned' do
-        expect(@data.key?('id')).to eq(true)
+        data = post '/vehicles', params: {vin: '22222222222222222'}
+        expect(data.key?('id')).to eq(true)
+      end
+
+      it 'accepts VINs with extra spaces' do
+        post '/vehicles', params: {vin: ' 22222222222222222 '}
+        expect(response.status).to eq(201)
       end
     end
   end
