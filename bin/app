@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require_relative '../config/environment'
+require 'thor'
+
+class Cli < Thor
+  desc 'add_vehicle VIN', 'Add a vehicle by VIN'
+  def add_vehicle(vin)
+    result = $app.add_vehicle(vin: vin)
+
+    case result.status
+    when :created
+      puts "Vehicle added: #{result.id}"
+    when :unprocessable_entity, :service_unavailable
+      puts result.errors
+    end
+  end
+end
+
+Cli.start

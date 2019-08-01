@@ -7,6 +7,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'http', '~> 4.1'
 gem 'zenv', '~> 1.1'
+gem 'thor', '~> 0.20', require: false
 
 group :test do
   gem 'rspec-rails', '~> 3'
