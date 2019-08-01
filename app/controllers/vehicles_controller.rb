@@ -14,12 +14,33 @@ class VehiclesController < ApplicationController
       vehicle = vehicles.find { |v| v['vin'] == vin }
 
       if vehicle
-        render json: {id: 1}, status: 201
+        id = Vehicle.create!.id
+        render json: {id: id}, status: 201
       else
         head 422
       end
     else
       head 422
+    end
+  end
+
+  def index
+    data = Vehicle.all.map do |vehicle|
+      {
+        id: vehicle.id,
+      }
+    end
+    render json: data
+  end
+
+  def show
+    vehicle = Vehicle.find_by(id: params[:id])
+    if vehicle
+      render json: {
+        id: vehicle.id,
+      }
+    else
+      not_found
     end
   end
 end

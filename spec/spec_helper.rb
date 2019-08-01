@@ -1,6 +1,7 @@
-ENV['ZENV'] = 'test'
 ENV['FLEETIO_API_KEY'] = 'FLEETIO_API_KEY'
 ENV['FLEETIO_ACCOUNT_TOKEN'] = 'FLEETIO_ACCOUNT_TOKEN'
+ENV['RAILS_ENV'] = 'test'
+ENV['ZENV'] = 'test'
 
 require 'zenv'
 
