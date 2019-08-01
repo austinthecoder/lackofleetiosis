@@ -15,6 +15,24 @@ class Cli < Thor
       puts result.errors
     end
   end
+
+  desc 'fetch_vehicles', 'Fetch all vehicles'
+  def fetch_vehicles
+    result = $app.fetch_vehicles
+    puts JSON.pretty_generate(result.vehicles.as_json)
+  end
+
+  desc 'fetch_vehicle ID', 'Fetch a vehicle by ID'
+  def fetch_vehicle(id)
+    result = $app.fetch_vehicle(id: id)
+
+    case result.status
+    when :ok
+      puts JSON.pretty_generate(result.vehicle.as_json)
+    when :not_found
+      puts "Vehicle not found"
+    end
+  end
 end
 
 Cli.start
