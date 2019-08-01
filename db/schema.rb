@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_01_015516) do
+ActiveRecord::Schema.define(version: 2019_08_01_022001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,6 +19,12 @@ ActiveRecord::Schema.define(version: 2019_08_01_015516) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "vin", null: false
+    t.string "make"
+    t.string "model"
+    t.integer "year"
+    t.string "trim"
+    t.string "color"
+    t.text "image_url"
     t.index ["vin"], name: "index_vehicles_on_vin", unique: true
   end
 

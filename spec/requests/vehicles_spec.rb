@@ -10,10 +10,22 @@ RSpec.describe 'vehicles' do
     body = <<~JSON
       [
         {
-          "vin": "22222222222222222"
+          "vin": "22222222222222222",
+          "make": "Ford",
+          "model": "F150 Regular Cab",
+          "year": 2012,
+          "trim": "EXT",
+          "color": "Red",
+          "default_image_url_large": "https://example.com/22222222222222222.png"
         },
         {
-          "vin": "33333333333333333"
+          "vin": "33333333333333333",
+          "make": "Acura",
+          "model": "Vigor",
+          "year": 1992,
+          "trim": "GS",
+          "color": null,
+          "default_image_url_large": "https://example.com/33333333333333333.png"
         }
       ]
     JSON
@@ -85,6 +97,12 @@ RSpec.describe 'vehicles' do
         expect(vehicle).to eq(
           'id' => @id,
           'vin' => '22222222222222222',
+          "make" => "Ford",
+          "model" => "F150 Regular Cab",
+          "year" => 2012,
+          "trim" => "EXT",
+          "color" => "Red",
+          "image_url" => "https://example.com/22222222222222222.png"
         )
       end
     end
@@ -103,10 +121,23 @@ RSpec.describe 'vehicles' do
     end
 
     it 'returns all vehicles' do
-      get '/vehicles'
       expect(@vehicles.size).to eq(2)
       expect(@vehicles.any? { |v| v['id'] == @id1 }).to eq(true)
       expect(@vehicles.any? { |v| v['id'] == @id2 }).to eq(true)
+    end
+
+    it 'returns all data for each vehicle' do
+      vehicle = @vehicles.find { |v| v['id'] == @id2 }
+      expect(vehicle).to eq(
+        'id' => @id2,
+        "vin" => "33333333333333333",
+        "make" => "Acura",
+        "model" => "Vigor",
+        "year" => 1992,
+        "trim" => "GS",
+        "color" => nil,
+        "image_url" => "https://example.com/33333333333333333.png",
+      )
     end
   end
 end

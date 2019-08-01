@@ -14,7 +14,15 @@ class VehiclesController < ApplicationController
       fleetio_vehicle = fleetio_vehicles.find { |v| v['vin'] == vin }
 
       if fleetio_vehicle
-        vehicle = Vehicle.new(vin: vin)
+        vehicle = Vehicle.new(
+          vin: vin,
+          make: fleetio_vehicle['make'],
+          model: fleetio_vehicle['model'],
+          year: fleetio_vehicle['year'],
+          trim: fleetio_vehicle['trim'],
+          color: fleetio_vehicle['color'],
+          image_url: fleetio_vehicle['default_image_url_large'],
+        )
 
         if vehicle.save
           render json: {id: vehicle.id}, status: 201
@@ -33,6 +41,13 @@ class VehiclesController < ApplicationController
     data = Vehicle.all.map do |vehicle|
       {
         id: vehicle.id,
+        vin: vehicle.vin,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.year,
+        trim: vehicle.trim,
+        color: vehicle.color,
+        image_url: vehicle.image_url,
       }
     end
     render json: data
@@ -44,6 +59,12 @@ class VehiclesController < ApplicationController
       render json: {
         id: vehicle.id,
         vin: vehicle.vin,
+        make: vehicle.make,
+        model: vehicle.model,
+        year: vehicle.year,
+        trim: vehicle.trim,
+        color: vehicle.color,
+        image_url: vehicle.image_url,
       }
     else
       not_found
