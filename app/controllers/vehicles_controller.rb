@@ -14,7 +14,7 @@ class VehiclesController < ApplicationController
       vehicle = vehicles.find { |v| v['vin'] == vin }
 
       if vehicle
-        id = Vehicle.create!.id
+        id = Vehicle.create!(vin: vin).id
         render json: {id: id}, status: 201
       else
         head 422
@@ -38,6 +38,7 @@ class VehiclesController < ApplicationController
     if vehicle
       render json: {
         id: vehicle.id,
+        vin: vehicle.vin,
       }
     else
       not_found

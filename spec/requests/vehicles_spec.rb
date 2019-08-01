@@ -75,6 +75,7 @@ RSpec.describe 'vehicles' do
         vehicle = get "/vehicles/#{@id}"
         expect(vehicle).to eq(
           'id' => @id,
+          'vin' => '22222222222222222',
         )
       end
     end
