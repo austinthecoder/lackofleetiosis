@@ -1,5 +1,12 @@
 class VehiclesController < ApplicationController
   def create
+    vin = params[:vin].to_s.strip
+
+    if vin.blank?
+      render json: {errors: ['VIN is required.']}, status: 422
+      return
+    end
+
     fleetio_api = HTTP.headers(
       'Authorization' => "Token #{ENV['FLEETIO_API_KEY']}",
       'Account-Token' => ENV['FLEETIO_ACCOUNT_TOKEN'],
@@ -7,33 +14,33 @@ class VehiclesController < ApplicationController
 
     resp = fleetio_api.get('https://secure.fleetio.com/api/v1/vehicles')
 
-    vin = params[:vin].to_s.strip
+    if resp.code != 200
+      render json: {errors: ['Service is unavailable at the moment.']}, status: 503
+      return
+    end
 
-    if resp.code == 200
-      fleetio_vehicles = JSON.parse(resp.body.to_s, symbolize_names: true)
-      fleetio_vehicle = fleetio_vehicles.find { |v| v[:vin] == vin }
+    fleetio_vehicles = JSON.parse(resp.body.to_s, symbolize_names: true)
+    fleetio_vehicle = fleetio_vehicles.find { |v| v[:vin] == vin }
 
-      if fleetio_vehicle
-        vehicle = Vehicle.new(
-          vin: vin,
-          make: fleetio_vehicle[:make],
-          model: fleetio_vehicle[:model],
-          year: fleetio_vehicle[:year],
-          trim: fleetio_vehicle[:trim],
-          color: fleetio_vehicle[:color],
-          image_url: fleetio_vehicle[:default_image_url_large],
-        )
+    unless fleetio_vehicle
+      render json: {errors: ['Unable to identify a vehicle.']}, status: 422
+      return
+    end
 
-        if vehicle.save
-          render json: {id: vehicle.id}, status: 201
-        else
-          head 422
-        end
-      else
-        head 422
-      end
+    vehicle = Vehicle.new(
+      vin: vin,
+      make: fleetio_vehicle[:make],
+      model: fleetio_vehicle[:model],
+      year: fleetio_vehicle[:year],
+      trim: fleetio_vehicle[:trim],
+      color: fleetio_vehicle[:color],
+      image_url: fleetio_vehicle[:default_image_url_large],
+    )
+
+    if vehicle.save
+      render json: {id: vehicle.id}, status: 201
     else
-      head 422
+      render json: {errors: vehicle.errors.values.flatten}, status: 422
     end
   end
 
