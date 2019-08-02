@@ -8,6 +8,7 @@ gem 'puma', '~> 3.11'
 gem 'http', '~> 4.1'
 gem 'zenv', '~> 1.1'
 gem 'ivo', '~> 0.4'
+gem 'sucker_punch', '~> 2.1'
 gem 'thor', '~> 0.20', require: false
 
 group :test do
