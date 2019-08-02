@@ -55,18 +55,23 @@ class App
     vehicle = fetch_vehicle(id: id)
     return if vehicle.status == :processed
 
-    begin
-      result = fleetio.fetch_fuel_entries(vehicle_id: vehicle.fleetio_vehicle_id)
+    result = fleetio.fetch_fuel_entries(vehicle_id: vehicle.fleetio_vehicle_id)
 
+    if result.status == :ok
       total_gallons = result.fuel_entries.sum { |fe| fe[:us_gallons].to_d }
       total_miles = result.fuel_entries.sum { |fe| fe[:usage_in_mi].to_d }
 
-      Vehicle.where(id: id).update_all(status_id: 2, total_gallons: total_gallons, total_miles: total_miles)
-    rescue
-      if vehicle.status == :unprocessed
-        Vehicle.where(id: id).update_all(status_id: 3)
-      end
+      update_vehicle(vehicle: vehicle, status: :processed, total_gallons: total_gallons, total_miles: total_miles)
+    else
+      update_vehicle(vehicle: vehicle, status: :error)
     end
+  rescue
+    update_vehicle(vehicle: vehicle, status: :error) if vehicle&.status == :unprocessed
+  end
+
+  def update_vehicle(vehicle: nil, id: nil, **updates)
+    vehicle ||= fetch_vehicle(id: id)
+    vehicle.update!(**updates)
   end
 
   private

@@ -1,15 +1,14 @@
 class Vehicle < ApplicationRecord
+  STATUSES = {1 => :unprocessed, 2 => :processed, 3 => :error}
+
   validates :vin, uniqueness: {scope: :vin}
 
   def status
-    case status_id
-    when 1
-      :unprocessed
-    when 2
-      :processed
-    when 3
-      :error
-    end
+    STATUSES[status_id]
+  end
+
+  def status=(value)
+    self.status_id = STATUSES.key(value)
   end
 
   def as_json(*)

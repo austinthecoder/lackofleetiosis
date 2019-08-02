@@ -56,7 +56,7 @@ RSpec.describe App do
       it 'reprocesses' do
         id = $app.add_vehicle(vin: '22222222222222222').id
 
-        Vehicle.where(id: id).update_all(status_id: 3) # I'd prefer to trigger a failure in a better way
+        $app.update_vehicle(id: id, status: :error) # I'd prefer to trigger a failure in a better way
 
         expect {
           $app.process_vehicle(id: id)
