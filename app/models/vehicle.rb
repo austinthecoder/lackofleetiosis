@@ -7,6 +7,8 @@ class Vehicle < ApplicationRecord
       :unprocessed
     when 2
       :processed
+    when 3
+      :error
     end
   end
 
