@@ -22,7 +22,7 @@ RSpec.describe 'vehicles – creating' do
     end
 
     it 'error is given' do
-      expect(@data[:errors]).to eq(['Unable to identify a vehicle.'])
+      expect(@data[:errors]).to eq(['Sorry, that vehicle was not found.'])
     end
   end
 

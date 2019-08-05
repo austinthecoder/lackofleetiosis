@@ -37,7 +37,7 @@ class App
         Ivo.(status: :unprocessable_entity, errors: vehicle.errors.values.flatten)
       end
     when :not_found
-      Ivo.(status: :unprocessable_entity, errors: ['Unable to identify a vehicle.'])
+      Ivo.(status: :unprocessable_entity, errors: ['Sorry, that vehicle was not found.'])
     else
       Ivo.(status: :service_unavailable, errors: ['Service is unavailable at the moment.'])
     end
