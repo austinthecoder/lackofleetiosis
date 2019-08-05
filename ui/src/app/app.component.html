@@ -1,0 +1,63 @@
+<div class="container">
+  <div class="card text-white bg-dark mb-3">
+    <div class="card-header">Lackofleetiosis</div>
+    <div class="card-body">
+      <p role="alert" *ngFor="let message of messages">{{message}}</p>
+
+      <form class="form-inline" [formGroup]="form" (ngSubmit)="addVehicle(form.value)">
+        <div class="form-group mx-sm-3 mb-2">
+          <input class="form-control" placeholder="VIN" type="text" formControlName="vin">
+        </div>
+
+        <button class="btn btn-primary mb-2" type="submit" [disabled]="loading">
+          <span *ngIf="!loading">Add Vehicle</span>
+          <em *ngIf="loading">one moment...</em>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-3 col-md-4" *ngFor="let vehicle of vehicles">
+      <div class="card">
+        <img class="card-img-top" *ngIf="vehicle.image_url" [src]="vehicle.image_url">
+        <img class="card-img-top" *ngIf="!vehicle.image_url" src="assets/default.png">
+
+        <div class="card-body">
+          <h5 class="card-title">{{vehicle.year}} {{vehicle.make}} {{vehicle.model}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{vehicle.vin}}</h6>
+        </div>
+
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Trim:</strong> {{vehicle.trim}}</li>
+          <li class="list-group-item"><strong>Color:</strong> {{vehicle.color}}</li>
+          <li class="list-group-item">
+            <strong>Efficiency: </strong>
+
+            <span *ngIf="vehicle.status == 'processed'">
+              {{vehicle.efficiency || 'N/A'}}
+            </span>
+
+            <span *ngIf="vehicle.status == 'unprocessed'">
+              <em>calculating...</em>
+              &nbsp;
+              <button class="btn btn-primary mb-2" (click)="loadVehicles()">Refresh</button>
+            </span>
+
+            <span *ngIf="vehicle.status == 'error'">
+              <button class="btn btn-primary mb-2" (click)="reprocessVehicle(vehicle)">Calculate</button>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <br>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="vehicles.length == 0">
+    <div class="col-xs-3 col-md-4">
+      <p class="alert alert-info" role="alert">No vehicles have been added.</p>
+      <img src="https://media.giphy.com/media/dYQh2AcRNN6Jq/giphy.gif">
+    </div>
+  </div>
+</div>
