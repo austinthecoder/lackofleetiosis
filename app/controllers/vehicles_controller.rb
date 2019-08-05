@@ -25,4 +25,9 @@ class VehiclesController < ApplicationController
       not_found
     end
   end
+
+  def reprocess
+    $app.process_vehicle(id: params[:id])
+    head 204
+  end
 end
