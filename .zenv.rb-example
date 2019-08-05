@@ -1,0 +1,7 @@
+{
+  default: {
+    FLEETIO_API_KEY: '',
+    FLEETIO_ACCOUNT_TOKEN: '',
+  },
+  test: {},
+}
