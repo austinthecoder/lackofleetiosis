@@ -8,17 +8,17 @@ class App
   end
 
   def add_vehicle(vin:)
-    vin = vin.to_s.strip
+    vehicle = Vehicle.new(vin: vin.to_s.strip)
 
-    if vin.blank?
-      return Ivo.(status: :unprocessable_entity, errors: ['VIN is required.'])
+    if vehicle.invalid?
+      return Ivo.(status: :unprocessable_entity, errors: vehicle.errors.values.flatten)
     end
 
-    result = fleetio.fetch_vehicle(vin: vin)
+    result = fleetio.fetch_vehicle(vin: vehicle.vin)
 
     case result.status
     when :ok
-      vehicle = Vehicle.new(
+      vehicle.assign_attributes(
         vin: vin,
         fleetio_vehicle_id: result.vehicle[:id],
         make: result.vehicle[:make],

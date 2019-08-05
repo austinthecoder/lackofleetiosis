@@ -39,7 +39,7 @@ RSpec.describe App do
         }.from(:unprocessed).to(:processed)
       end
 
-      it 'set a few attrs' do
+      it 'sets a few attrs' do
         from = [nil, nil]
         to = [BigDecimal('30.5'), BigDecimal('580.8')]
 

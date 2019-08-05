@@ -1,7 +1,7 @@
 class Vehicle < ApplicationRecord
   STATUSES = {1 => :unprocessed, 2 => :processed, 3 => :error}
 
-  validates :vin, uniqueness: {scope: :vin}
+  validates :vin, uniqueness: {scope: :vin}, presence: true
 
   def status
     STATUSES[status_id]
