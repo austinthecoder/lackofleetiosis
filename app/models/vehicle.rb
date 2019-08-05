@@ -11,6 +11,12 @@ class Vehicle < ApplicationRecord
     self.status_id = STATUSES.key(value)
   end
 
+  def efficiency
+    if total_miles && total_miles > 0
+      (total_gallons / total_miles).round(2)
+    end
+  end
+
   def as_json(*)
     {
       id: id,
@@ -22,8 +28,7 @@ class Vehicle < ApplicationRecord
       color: color,
       image_url: image_url,
       status: status,
-      total_gallons: total_gallons,
-      total_miles: total_miles,
+      efficiency: efficiency,
     }
   end
 end

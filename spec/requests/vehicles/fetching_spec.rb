@@ -29,8 +29,7 @@ RSpec.describe 'vehicles – fetching' do
           color: "Red",
           image_url: "https://example.com/22.png",
           status: 'unprocessed',
-          total_gallons: nil,
-          total_miles: nil,
+          efficiency: nil,
         )
       end
 
@@ -42,8 +41,7 @@ RSpec.describe 'vehicles – fetching' do
 
           vehicle = get "/vehicles/#{id}"
           expect(vehicle[:status]).to eq('processed')
-          expect(vehicle[:total_gallons]).to eq('16.9')
-          expect(vehicle[:total_miles]).to eq('270.1')
+          expect(vehicle[:efficiency]).to eq('0.06')
         end
 
         it 'handles no fuel entries correctly' do
@@ -53,8 +51,7 @@ RSpec.describe 'vehicles – fetching' do
 
           vehicle = get "/vehicles/#{id}"
           expect(vehicle[:status]).to eq('processed')
-          expect(vehicle[:total_gallons]).to eq('0.0')
-          expect(vehicle[:total_miles]).to eq('0.0')
+          expect(vehicle[:efficiency]).to eq(nil)
         end
       end
     end
@@ -90,8 +87,7 @@ RSpec.describe 'vehicles – fetching' do
         color: nil,
         image_url: "https://example.com/33.png",
         status: 'unprocessed',
-        total_gallons: nil,
-        total_miles: nil,
+        efficiency: nil,
       )
     end
   end
