@@ -1,11 +1,4 @@
 RSpec.describe 'app' do
-  context 'root path' do
-    it 'says hello' do
-      data = get '/'
-      expect(data[:message]).to eq('Hello, friends')
-    end
-  end
-
   context 'when path does not exist' do
     [
       ['get', ['/path']],

@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  root to: 'application#root'
-
   resources :vehicles, only: [:create, :index, :show] do
     member { post :reprocess }
   end
