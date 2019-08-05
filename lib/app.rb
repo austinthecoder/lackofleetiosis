@@ -44,7 +44,7 @@ class App
   end
 
   def fetch_vehicles
-    Vehicle.all
+    Vehicle.order(created_at: :desc).all
   end
 
   def fetch_vehicle(id:)
